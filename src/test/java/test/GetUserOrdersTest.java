@@ -2,7 +2,6 @@ package test;
 
 import api.OrderData;
 import api.UserData;
-import com.github.javafaker.Faker;
 import constants.Constants;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
@@ -16,22 +15,25 @@ import util.TestHelper;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class GetUserOrdersTest{
+public class GetUserOrdersTest {
     String bearerToken;
+
     @Before
     public void setUp() {
         RestAssured.baseURI = Constants.BASE_URI;
     }
+
     @After
     public void deleteUser() {
-        if(bearerToken != null) {
+        if (bearerToken != null) {
             UserData.deleteUser(bearerToken);
         }
     }
+
     @Test
     @DisplayName("Check User Orders")
     @Description("Test display user orders with login")
-    public void testWithLoginGetUserOrders(){
+    public void testWithLoginGetUserOrders() {
         // Generate user data
         NewUser testUser = TestHelper.createTestUser();
         // Create the user
@@ -52,10 +54,11 @@ public class GetUserOrdersTest{
                 .and()
                 .statusCode(HttpStatus.SC_OK);
     }
+
     @Test
     @DisplayName("Check User Orders without authorisation")
     @Description("Test user orders without login are not displayed")
-    public void testWithoutLoginGetUserOrders(){
+    public void testWithoutLoginGetUserOrders() {
         OrderData.getUserOrders(bearerToken)
                 .then()
                 .assertThat()

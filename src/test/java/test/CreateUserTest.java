@@ -1,7 +1,6 @@
 package test;
 
 import api.UserData;
-import com.github.javafaker.Faker;
 import constants.Constants;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
@@ -13,13 +12,14 @@ import org.junit.Before;
 import org.junit.Test;
 import util.TestHelper;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 
 public class CreateUserTest {
     String bearerToken;
     String name;
     String password;
     String email;
+
     @Before
     public void setUp() {
         RestAssured.baseURI = Constants.BASE_URI;
@@ -28,16 +28,18 @@ public class CreateUserTest {
 //        this.password = faker.internet().password();
 //        this.email = faker.internet().emailAddress();
     }
+
     @After
     public void deleteUser() {
-        if(bearerToken != null) {
+        if (bearerToken != null) {
             UserData.deleteUser(bearerToken);
         }
     }
+
     @Test
     @DisplayName("Check User Creation")
     @Description("Test with correct email, password and name")
-    public void testForCreateUser(){
+    public void testForCreateUser() {
         NewUser testUser = TestHelper.createTestUser();
 
         UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName())
@@ -52,10 +54,11 @@ public class CreateUserTest {
                 .extract()
                 .path("accessToken");
     }
+
     @Test
     @DisplayName("Check User Creation Duplicate")
     @Description("Test user creation with the same data")
-    public void testForUniqueUser(){
+    public void testForUniqueUser() {
         NewUser testUser = TestHelper.createTestUser();
         UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName());
         UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName())
@@ -69,10 +72,11 @@ public class CreateUserTest {
                 .extract()
                 .path("accessToken");
     }
+
     @Test
     @DisplayName("Check User Creation without email")
     @Description("Test user creation required fields")
-    public void testForRequiredEmail(){
+    public void testForRequiredEmail() {
         NewUser testUser = TestHelper.createTestUser();
         UserData.createUser(null, testUser.getPassword(), testUser.getName())
                 .then()

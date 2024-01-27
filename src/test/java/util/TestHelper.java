@@ -1,7 +1,6 @@
 package util;
 
 import com.github.javafaker.Faker;
-import api.UserData;
 import model.NewUser;
 
 public class TestHelper {
@@ -9,6 +8,7 @@ public class TestHelper {
     /**
      * Creates a test user using Faker and UserData class.
      * It generates random user details and registers the user.
+     *
      * @return NewUser object representing the created test user.
      */
 //    public static NewUser createTestUser() {
@@ -21,7 +21,6 @@ public class TestHelper {
 //        UserData.createUser(email, password, name);
 //        return new NewUser(email, password, name);
 //    }
-
     public static NewUser createTestUser() {
         Faker faker = new Faker();
         String name = faker.name().firstName();

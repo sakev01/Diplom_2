@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class IngredientsResponse {
     private String success;
@@ -30,8 +29,8 @@ public class IngredientsResponse {
 
     public ArrayList getIngredients(int count) {
         ArrayList<String> ingredients = new ArrayList<>();
-        for (int i=0; i < data.size(); i++) {
-            if(i == count) {
+        for (int i = 0; i < data.size(); i++) {
+            if (i == count) {
                 break;
             }
             String ingredientId = data.get(i).get_id();

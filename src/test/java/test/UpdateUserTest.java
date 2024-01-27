@@ -1,7 +1,6 @@
 package test;
 
 import api.UserData;
-import com.github.javafaker.Faker;
 import constants.Constants;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
@@ -21,15 +20,17 @@ public class UpdateUserTest {
     public void setUp() {
         RestAssured.baseURI = Constants.BASE_URI;
     }
+
     @After
     public void deleteUser() {
         if (bearerToken != null) {
             UserData.deleteUser(bearerToken);
         }
     }
+
     @Test
     @DisplayName("Check Updated login")
-    public void testForUpdateLoginUser(){
+    public void testForUpdateLoginUser() {
         NewUser testUser = TestHelper.createTestUser();
         UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName());
         bearerToken = UserData.loginUser(testUser.getEmail(), testUser.getPassword())
@@ -56,9 +57,10 @@ public class UpdateUserTest {
                 .extract()
                 .path("accessToken");
     }
+
     @Test
     @DisplayName("Check logout")
-    public void testForUpdateLogoutUser(){
+    public void testForUpdateLogoutUser() {
         NewUser testUser = TestHelper.createTestUser();
         UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName());
 
