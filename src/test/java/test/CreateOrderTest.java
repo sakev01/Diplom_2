@@ -1,11 +1,19 @@
+package test;
+
+import api.OrderData;
+import api.UserData;
+import constants.Constants;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
+import model.NewUser;
 import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.github.javafaker.Faker;
+import util.TestHelper;
+
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -26,12 +34,8 @@ public class CreateOrderTest {
     @DisplayName("Check Oder Creation")
     @Description("Test with login to create order")
     public void testWithLoginCreateOrder(){
-        Faker faker = new Faker();
-        String name = faker.name().firstName();
-        String password = faker.internet().password();
-        String email = faker.internet().emailAddress();
-        UserData.createUser(email, password, name);
-        bearerToken = UserData.loginUser(email, password)
+        NewUser testUser = TestHelper.createTestUser();
+        bearerToken = UserData.loginUser(testUser.getEmail(), testUser.getPassword())
                 .then()
                 .extract()
                 .path("accessToken");

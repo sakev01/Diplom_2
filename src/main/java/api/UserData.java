@@ -1,5 +1,9 @@
+package api;
+
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import model.NewUser;
+import model.UserAuth;
 
 import static io.restassured.RestAssured.given;
 

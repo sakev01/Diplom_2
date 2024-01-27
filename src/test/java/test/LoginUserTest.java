@@ -1,11 +1,17 @@
+package test;
+
+import api.UserData;
 import com.github.javafaker.Faker;
+import constants.Constants;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
+import model.NewUser;
 import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import util.TestHelper;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -17,10 +23,7 @@ public class LoginUserTest {
     @Before
     public void setUp() {
         RestAssured.baseURI = Constants.BASE_URI;
-        Faker faker = new Faker();
-        this.name = faker.name().firstName();
-        this.password = faker.internet().password();
-        this.email = faker.internet().emailAddress();
+
     }
     @After
     public void deleteUser() {
@@ -32,8 +35,10 @@ public class LoginUserTest {
     @DisplayName("Check login")
     @Description("Create a new user and login with the same user")
     public void testForLoginUser(){
-        UserData.createUser(email, password, name);
-        bearerToken = UserData.loginUser(email, password)
+        NewUser testUser = TestHelper.createTestUser();
+        UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName());
+
+        bearerToken = UserData.loginUser(testUser.getEmail(), testUser.getPassword())
                 .then()
                 .assertThat()
                 .body("success", equalTo(true))
@@ -46,8 +51,10 @@ public class LoginUserTest {
     @DisplayName("Check login with wrong  email")
     @Description("Create a new user and login with incorrect email")
     public void testForLoginUserWithIncorrectEmail(){
-        UserData.createUser(email, password, name);
-        UserData.loginUser("incorrect" + email, password)
+        NewUser testUser = TestHelper.createTestUser();
+        UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName());
+
+        UserData.loginUser("incorrect" + testUser.getEmail(), testUser.getPassword())
                 .then()
                 .assertThat()
                 .body("message", equalTo("email or password are incorrect"))

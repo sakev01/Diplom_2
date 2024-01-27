@@ -1,5 +1,9 @@
+package api;
+
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import model.IngredientsResponse;
+import model.NewOrder;
 
 import java.util.ArrayList;
 

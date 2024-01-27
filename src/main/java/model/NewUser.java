@@ -1,12 +1,14 @@
+package model;
 
-
-public class UserAuth {
+public class NewUser {
     private String email;
     private String password;
+    private String name;
 
-    public UserAuth(String email, String password) {
+    public NewUser(String email, String password, String name) {
         this.email = email;
         this.password = password;
+        this.name = name;
     }
 
     public String getEmail() {
@@ -23,5 +25,13 @@ public class UserAuth {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

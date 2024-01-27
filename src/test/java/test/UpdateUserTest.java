@@ -1,31 +1,25 @@
+package test;
+
+import api.UserData;
 import com.github.javafaker.Faker;
+import constants.Constants;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
+import model.NewUser;
 import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import util.TestHelper;
 
 import static org.hamcrest.Matchers.equalTo;
 
 public class UpdateUserTest {
     String bearerToken;
-    String name;
-    String password;
-    String email;
-    String updatedName;
-    String updatedPassword;
-    String updatedEmail;
+
     @Before
     public void setUp() {
         RestAssured.baseURI = Constants.BASE_URI;
-        Faker faker = new Faker();
-        this.name = faker.name().firstName();
-        this.password = faker.internet().password();
-        this.email = faker.internet().emailAddress();
-        this.updatedName = faker.name().firstName();
-        this.updatedPassword = faker.internet().password();
-        this.updatedEmail = faker.internet().emailAddress();
     }
     @After
     public void deleteUser() {
@@ -36,8 +30,9 @@ public class UpdateUserTest {
     @Test
     @DisplayName("Check Updated login")
     public void testForUpdateLoginUser(){
-        UserData.createUser(email, password, name);
-        bearerToken = UserData.loginUser(email, password)
+        NewUser testUser = TestHelper.createTestUser();
+        UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName());
+        bearerToken = UserData.loginUser(testUser.getEmail(), testUser.getPassword())
                 .then()
                 .assertThat()
                 .body("success", equalTo(true))
@@ -45,13 +40,18 @@ public class UpdateUserTest {
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
                 .path("accessToken");
-        UserData.updateUser(bearerToken, updatedEmail, updatedPassword, updatedName)
+
+        // Generate updated user data
+        NewUser updatedUser = TestHelper.createTestUser();
+        UserData.updateUser(bearerToken, updatedUser.getEmail(), updatedUser.getPassword(), updatedUser.getName())
                 .then()
                 .assertThat()
                 .body("success", equalTo(true))
                 .and()
                 .statusCode(HttpStatus.SC_OK);
-        bearerToken = UserData.loginUser(updatedEmail, updatedPassword)
+
+        // Login with updated credentials
+        bearerToken = UserData.loginUser(updatedUser.getEmail(), updatedUser.getPassword())
                 .then()
                 .extract()
                 .path("accessToken");
@@ -59,16 +59,16 @@ public class UpdateUserTest {
     @Test
     @DisplayName("Check logout")
     public void testForUpdateLogoutUser(){
-        UserData.createUser(email, password, name);
-        UserData.updateUser(bearerToken, updatedEmail, updatedPassword, updatedName)
+        NewUser testUser = TestHelper.createTestUser();
+        UserData.createUser(testUser.getEmail(), testUser.getPassword(), testUser.getName());
+
+        // Attempt to update user without logging in
+        NewUser updatedUser = TestHelper.createTestUser();
+        UserData.updateUser(null, updatedUser.getEmail(), updatedUser.getPassword(), updatedUser.getName())
                 .then()
                 .assertThat()
                 .body("message", equalTo("You should be authorised"))
                 .and()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
-        bearerToken = UserData.loginUser(email, password)
-                .then()
-                .extract()
-                .path("accessToken");
     }
 }
